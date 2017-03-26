@@ -2,6 +2,8 @@
 #include <iostream>
 #include <math.h>
 #include <GL/freeglut.h>
+#include "loadBMP.h"
+#include "loadTGA.h"
 using namespace std;
 
 #define PI 3.14159265
@@ -20,17 +22,89 @@ double los_z = -1;
 float trophy_theta = 0;
 float my_horse_theta = 0;
 float your_horse_theta = 0;
+float other_horse_theta = 0;
 float front_leg_theta = 0;
 float back_leg_theta = 0;
 bool front_leg_fowards = false;
 bool back_leg_fowards = true;
 
+// colours
+float white[4] = { 1.0, 1.0, 1.0, 1.0 };
+float grey[4] = { 0.2, 0.2, 0.2, 1.0 };
+float black[4] = { 0 };
+
+// texture
+GLuint txId[10];  
+
+//------Function to load a texture in bmp format  ------------------------
+void loadTexture()
+{
+	glGenTextures(10, txId);
+
+	glBindTexture(GL_TEXTURE_2D, txId[0]);
+	loadBMP("RaceFlag.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // GL_MODULATE for shadows
+
+	glBindTexture(GL_TEXTURE_2D, txId[1]);
+	loadBMP("1stPlace.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[2]);
+	loadBMP("2ndPlace.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[3]);
+	loadBMP("3rdPlace.bmp");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[4]);
+	loadTGA("up.tga");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[5]);
+	loadTGA("down.tga");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[6]);
+	loadTGA("front.tga");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[7]);
+	loadTGA("back.tga");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[8]);
+	loadTGA("left.tga");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glBindTexture(GL_TEXTURE_2D, txId[9]);
+	loadTGA("right.tga");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+}
 
 				  //-- Ground Plane --------------------------------------------------------
 void floor()
 {
-	float white[4] = { 1., 1., 1., 1. };
-	float black[4] = { 0 };
 	glColor4f(0.8, 0.72, 0.6, 1.0);  //The floor is dusty brown
 	glNormal3f(0.0, 1.0, 0.0);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, black);
@@ -49,6 +123,83 @@ void floor()
 	}
 	glEnd();
 
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
+}
+
+void skybox()
+{
+	glMaterialfv(GL_FRONT, GL_SPECULAR, black);
+
+	float x_left = -500;
+	float x_right = 500;
+	float y_top = 200;
+	float y_bottom = -1;
+	float z_back = -500;
+	float z_front = 500;
+	
+	glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, txId[4]);
+	glBegin(GL_QUADS);		
+		// top
+		glNormal3f(0.0, -1.0, 0.0);
+		glTexCoord2f(0, 1); glVertex3f(x_left, y_top, z_back);
+		glTexCoord2f(0, 0); glVertex3f(x_right, y_top, z_back);
+		glTexCoord2f(1, 0); glVertex3f(x_right, y_top, z_front);
+		glTexCoord2f(1, 1); glVertex3f(x_left, y_top, z_front);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, txId[5]);
+	glBegin(GL_QUADS);
+		// bottom
+		glNormal3f(0.0, 1.0, 0.0);
+		glTexCoord2f(1, 0); glVertex3f(x_right, y_bottom, z_back);
+		glTexCoord2f(0, 0); glVertex3f(x_left, y_bottom, z_back);
+		glTexCoord2f(0, 1); glVertex3f(x_left, y_bottom, z_front);
+		glTexCoord2f(1, 1); glVertex3f(x_right, y_bottom, z_front);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, txId[7]);
+	glBegin(GL_QUADS);
+		// front
+		glNormal3f(0.0, 0.0, 1.0);
+		glTexCoord2f(0, 1); glVertex3f(x_left, y_top, z_back);
+		glTexCoord2f(0, 0.3); glVertex3f(x_left, y_bottom, z_back);
+		glTexCoord2f(1, 0.3); glVertex3f(x_right, y_bottom, z_back);
+		glTexCoord2f(1, 1); glVertex3f(x_right, y_top, z_back);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, txId[6]);
+	glBegin(GL_QUADS);
+		// back
+		glNormal3f(0.0, 0.0, -1.0);
+		glTexCoord2f(1, 0.3); glVertex3f(x_left, y_bottom, z_front);
+		glTexCoord2f(1, 1); glVertex3f(x_left, y_top, z_front);
+		glTexCoord2f(0, 1); glVertex3f(x_right, y_top, z_front);
+		glTexCoord2f(0, 0.3); glVertex3f(x_right, y_bottom, z_front);
+	glEnd();
+	
+	glBindTexture(GL_TEXTURE_2D, txId[8]);
+	glBegin(GL_QUADS);
+		// left
+		glNormal3f(1.0, 0.0, 0.0);
+		glTexCoord2f(0, 1); glVertex3f(x_left, y_top, z_front);
+		glTexCoord2f(0, 0.3); glVertex3f(x_left, y_bottom, z_front);
+		glTexCoord2f(1, 0.3); glVertex3f(x_left, y_bottom, z_back);
+		glTexCoord2f(1, 1); glVertex3f(x_left, y_top, z_back);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, txId[9]);
+	glBegin(GL_QUADS);
+		// right
+		glNormal3f(-1.0, 0.0, 0.0);
+		glTexCoord2f(1, 0.3); glVertex3f(x_right, y_bottom, z_front);
+		glTexCoord2f(1, 1); glVertex3f(x_right, y_top, z_front);
+		glTexCoord2f(0, 1); glVertex3f(x_right, y_top, z_back);
+		glTexCoord2f(0, 0.3); glVertex3f(x_right, y_bottom, z_back);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 }
 
@@ -100,40 +251,59 @@ void tracks()
 	track(155.0);   //Outer track boundary has radius 155 units
 }
 
-void firstblock()
+void block(float x_min, float x_max, float y_min, float y_max, float z_min, float z_max, GLuint texture)
 {
-	glPushMatrix();
-		glScalef(1, 3, 1);
-		glutSolidCube(15);
-	glPopMatrix();
-}
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	
+	glBegin(GL_QUADS);
+		glNormal3f(0.0, 0.0, 1.0); //Facing +z
+		glTexCoord2f(0, 0); glVertex3f(x_min, y_min, z_max);
+		glTexCoord2f(1, 0); glVertex3f(x_max, y_min, z_max);
+		glTexCoord2f(1, 1); glVertex3f(x_max, y_max, z_max);
+		glTexCoord2f(0, 1); glVertex3f(x_min, y_max, z_max);
 
-void secondblock() 
-{
-	glPushMatrix();
-		glTranslatef(-15, 0, 0);
-		glScalef(1, 2, 1);
-		glutSolidCube(15);
-	glPopMatrix();
-}
+		glNormal3f(0.0, 0.0, -1.0); //Facing -z
+		glTexCoord2f(0, 0); glVertex3f(x_max, y_min, z_min);
+		glTexCoord2f(1, 0); glVertex3f(x_min, y_min, z_min);
+		glTexCoord2f(1, 1); glVertex3f(x_min, y_max, z_min);
+		glTexCoord2f(0, 1); glVertex3f(x_max, y_max, z_min);
+	glEnd();
+	
+	glDisable(GL_TEXTURE_2D);
 
-void thirdblock()
-{
-	glPushMatrix();
-		glTranslatef(15, 0, 0);
-		glScalef(1, 1, 1);
-		glutSolidCube(15);
-	glPopMatrix();
+	glBegin(GL_QUADS);
+		glNormal3f(1.0, 0.0, 0.0); //Facing +x
+		glVertex3f(x_max, y_min, z_max);
+		glVertex3f(x_max, y_min, z_min);
+		glVertex3f(x_max, y_max, z_min);
+		glVertex3f(x_max, y_max, z_max);
+
+		glNormal3f(-1.0, 0.0, 0.0); //Facing -x
+		glVertex3f(x_min, y_min, z_max);
+		glVertex3f(x_min, y_min, z_min);
+		glVertex3f(x_min, y_max, z_min);
+		glVertex3f(x_min, y_max, z_max);
+
+		glNormal3f(0.0, 1.0, 0.0); //Facing +y
+		glVertex3f(x_min, y_max, z_min);
+		glVertex3f(x_max, y_max, z_min);
+		glVertex3f(x_max, y_max, z_max);
+		glVertex3f(x_min, y_max, z_max);
+
+	glEnd();
 }
 
 void podium()
 {
-	firstblock();
-	secondblock();
-	thirdblock();
+	glColor4f(0.15, 0.15, 0.15, 1.0); // near black
+	block(-8, 8, 0, 22, -7.5, 7.5, txId[1]);
+	block(-24, -8, 0, 15, -7.5, 7.5, txId[2]);
+	block(8, 24, 0, 10, -7.5, 7.5, txId[3]);
+	glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 }
 
-void trophy_base()
+void actual_trophy()
 {
 	// teapot
 	glPushMatrix();
@@ -144,7 +314,7 @@ void trophy_base()
 	// cylinder
 	glPushMatrix();
 		glRotatef(-90, 1, 0, 0);
-		gluCylinder(q, 1, 3, 10, 10, 10);
+		gluCylinder(q, 1, 3, 9, 10, 1);
 	glPopMatrix();
 
 	// cube
@@ -156,13 +326,14 @@ void trophy_base()
 
 void turntable()
 {
+	glMaterialfv(GL_FRONT, GL_SPECULAR, black);
 	glPushMatrix();
 		glRotatef(-90, 1, 0, 0);
 		gluCylinder(q, 10, 10, 3, 20, 1);
 		glTranslatef(0, 0, 3);
-		gluDisk(q, 0, 10, 20, 1);
-		
+		gluDisk(q, 0, 10, 20, 1);		
 	glPopMatrix();
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 }
 
 void lamp()
@@ -176,14 +347,16 @@ void lamp()
 			glRotatef(-45, 0, 1, 0);
 			glTranslatef(0, 25, 0);
 			glRotatef(25, 1, 0, 0);
-			gluCylinder(q, 1, 3, 3, 20, 1);
+			glColor4f(0, 0.9, 0.9, 1.0); // cyan lampshade
+			gluCylinder(q, 0.5, 3, 3, 20, 1);
 			glTranslatef(0, 0, 3);
-			glColor4f(1, 1, 0.8, 1.0); 
+			glColor4f(1, 1, 0.8, 1.0); // yellow-white light
 			gluDisk(q, 0, 3, 20, 1);
-			glColor4f(0.3, 0.2, 0.2, 1.0);
+			glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown post
 		glPopMatrix();
 
-		glScalef(1, 50, 1);
+		glTranslatef(0, 13, 0);
+		glScalef(1, 26, 1);
 		glutSolidCube(1);
 	glPopMatrix();
 
@@ -198,7 +371,9 @@ void trophy()
 		glPushMatrix();
 			glTranslatef(0, 5, 0);
 			glScalef(1.25, 1.25, 1.25);
-			trophy_base();
+			glColor4f(0.7, 0.6, 0.1, 1.0); // golden trophy
+			actual_trophy();
+			glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 		glPopMatrix();
 		turntable();
 		
@@ -225,11 +400,18 @@ void outerpost()
 
 void banner()
 {
-	glPushMatrix();
-		glTranslatef(0, 25, 0);
-		glScalef(1, 5, 30);
-		glutSolidCube(2);
-	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, txId[0]);
+	
+	glBegin(GL_QUADS);
+		glNormal3f(1.0, 0.0, 0.0); //Facing +x
+		glTexCoord2f(0, 0); glVertex3f(0, 20, -29.0);
+		glTexCoord2f(1.5, 0); glVertex3f(0, 20, 29.0);
+		glTexCoord2f(1.5, 0.7); glVertex3f(0, 30, 29.0);
+		glTexCoord2f(0, 0.65); glVertex3f(0, 30, -29.0);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
 }
 
 void finishline()
@@ -332,7 +514,7 @@ void your_horse()
 {
 	glPushMatrix();
 		glRotatef(your_horse_theta, 0, 1, 0);
-		glTranslatef(0, 0, 115);
+		glTranslatef(0, 0, 105);
 		front_left_leg();
 		front_right_leg();
 		back_left_leg();
@@ -345,7 +527,20 @@ void my_horse()
 {
 	glPushMatrix();
 		glRotatef(my_horse_theta, 0, 1, 0);
-		glTranslatef(0, 0, 135);
+		glTranslatef(0, 0, 125);
+		front_left_leg();
+		front_right_leg();
+		back_left_leg();
+		back_right_leg();
+		body();
+	glPopMatrix();
+}
+
+void other_horse()
+{
+	glPushMatrix();
+		glRotatef(other_horse_theta, 0, 1, 0);
+		glTranslatef(0, 0, 145);
 		front_left_leg();
 		front_right_leg();
 		back_left_leg();
@@ -371,15 +566,29 @@ void special(int key, int x, int y)
 	los_x = sin(cam_rotation * PI / 180.0);
 	los_z = -cos(cam_rotation * PI / 180.0);
 	// cout << "pos: " << cam_position_x << " " << cam_position_z << " dir: " << los_x << " " << los_z << endl;
+
+	float max_pos = 200;
+	float min_pos = -200;
+	if (cam_position_x > max_pos) {
+		cam_position_x = max_pos;
+	} else if (cam_position_x < min_pos) {
+		cam_position_x = min_pos;
+	}
+	if (cam_position_z > max_pos) {
+		cam_position_z = max_pos;
+	}
+	else if (cam_position_z < min_pos) {
+		cam_position_z = min_pos;
+	}
+
 	glutPostRedisplay();
 }
 
 void initialize(void)
 {
-	float grey[4] = { 0.2, 0.2, 0.2, 1.0 };
-	float white[4] = { 1.0, 1.0, 1.0, 1.0 };
-
 	q = gluNewQuadric();
+
+	loadTexture();
 
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -411,9 +620,9 @@ void initialize(void)
 
 void display(void)
 {
-	float lgt_pos[] = { 0.0f, 100.0f, 175.0f, 1.0f };  //light0 position (directly above the origin)
-	float spotlgt_pos[] = { 65.0f, 25.0f, -15.0f, 1.0f }; // light1 position
-	float spotdir[] = { -5.0, -7.0, 4.0 };
+	float lgt_pos[] = { -70.0f, 100.0f, -75.0f, 1.0f };  //light0 position
+	float spotlgt_pos[] = { 65.0f, 20.0f, -15.0f, 1.0f }; // light1 position
+	float spotdir[] = { -5.0, -3.0, 4.0 };
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
@@ -429,12 +638,14 @@ void display(void)
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotdir);
 
 	floor();
+	skybox();
 	tracks();
 	podium();
 	trophy();
 	finishline();
 	your_horse();
 	my_horse();
+	other_horse();
 
 	glutSwapBuffers();   //Useful for animation
 }
@@ -476,12 +687,12 @@ void calculateLegMovement() {
 
 void myTimer(int value)
 {
-	my_horse_theta++;
-	your_horse_theta += 1.05;
-	trophy_theta++;
+	//my_horse_theta++;
+	//your_horse_theta += 1.02;
+	//other_horse_theta += 0.97;
+	//trophy_theta++;
 	
-	calculateLegMovement();
-
+	//calculateLegMovement();
 
 	glutPostRedisplay();
 	glutTimerFunc(20, myTimer, 0);
@@ -493,7 +704,7 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(50, 50);
-	glutCreateWindow("Wild West");
+	glutCreateWindow("Wild West Robot Race");
 	glutSpecialFunc(special);
 	glutTimerFunc(40, myTimer, 0);
 	initialize();

@@ -25,4 +25,50 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="loadBMP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="loadTGA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Apartment.bmp">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="Earth.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="RaceFlag.bmp">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="1stPlace.bmp">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="2ndPlace.bmp">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="3rdPlace.bmp">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="skybox2\back.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="skybox2\down.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="skybox2\front.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="skybox2\left.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="skybox2\right.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+    <Image Include="skybox2\up.tga">
+      <Filter>Header Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

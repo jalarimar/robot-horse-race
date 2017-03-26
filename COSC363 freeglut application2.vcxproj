@@ -154,6 +154,24 @@
     <ClCompile Include="..\..\..\..\Engineering2017\363\Train.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="loadBMP.h" />
+    <ClInclude Include="loadTGA.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="1stPlace.bmp" />
+    <Image Include="2ndPlace.bmp" />
+    <Image Include="3rdPlace.bmp" />
+    <Image Include="Apartment.bmp" />
+    <Image Include="Earth.tga" />
+    <Image Include="RaceFlag.bmp" />
+    <Image Include="skybox2\back.tga" />
+    <Image Include="skybox2\down.tga" />
+    <Image Include="skybox2\front.tga" />
+    <Image Include="skybox2\left.tga" />
+    <Image Include="skybox2\right.tga" />
+    <Image Include="skybox2\up.tga" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

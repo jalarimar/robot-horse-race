@@ -1,18 +1,32 @@
 ﻿  Source.cpp
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(44): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(45): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(46): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(47): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(59): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(68): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(70): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(98): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(181): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(183): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(379): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(379): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(480): warning C4305: '+=': truncation from 'double' to 'float'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(33): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(33): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(108): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(118): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(119): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(120): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(121): warning C4244: 'argument': conversion from 'int' to 'GLfloat', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(167): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(168): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(176): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(179): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(187): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(188): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(196): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(199): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(210): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(219): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(220): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(221): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(222): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(249): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(299): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(303): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(350): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(353): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(355): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(374): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(376): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(410): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+c:\users\jay\documents\visual studio 2015\projects\cosc363 freeglut application2\cosc363 freeglut application2\source.cpp(411): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
   COSC363 freeglut application2.vcxproj -> C:\Users\Jay\documents\visual studio 2015\Projects\COSC363 freeglut application2\Debug\COSC363 freeglut application2.exe

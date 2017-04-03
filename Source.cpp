@@ -1,5 +1,6 @@
 //#include <stdlib.h>
 #include <iostream>
+#include <string>
 #include <math.h>
 #include <GL/freeglut.h>
 #include "loadBMP.h"
@@ -34,24 +35,54 @@ float grey[4] = { 0.2, 0.2, 0.2, 1.0 };
 float black[4] = { 0 };
 
 // texture
-GLuint txId[10];  
+GLuint txId[10]; 
+int texCount = 0;
+
+void makeTexture(char* name, bool isTGA)
+{
+	glBindTexture(GL_TEXTURE_2D, txId[texCount]);
+	if (isTGA) {
+		loadTGA(name);
+	} else {
+		loadBMP(name);
+	}
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	
+	texCount += 1;
+}
 
 //------Function to load a texture in bmp format  ------------------------
 void loadTexture()
 {
 	glGenTextures(10, txId);
+	
+	makeTexture("RaceFlag.bmp", false);
+	makeTexture("1stPlace.bmp", false);
+	makeTexture("2ndPlace.bmp", false);
+	makeTexture("3rdPlace.bmp", false);
+	makeTexture("up.tga", true);
+	makeTexture("down.tga", true);
+	makeTexture("front.tga", true);
+	makeTexture("back.tga", true);
+	makeTexture("left.tga", true);
+	makeTexture("right.tga", true);
+	
 
+/*
 	glBindTexture(GL_TEXTURE_2D, txId[0]);
 	loadBMP("RaceFlag.bmp");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); // GL_MODULATE for shadows
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 	glBindTexture(GL_TEXTURE_2D, txId[1]);
 	loadBMP("1stPlace.bmp");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	* 
 
 	glBindTexture(GL_TEXTURE_2D, txId[2]);
 	loadBMP("2ndPlace.bmp");
@@ -100,6 +131,7 @@ void loadTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	* */
 }
 
 				  //-- Ground Plane --------------------------------------------------------
@@ -365,16 +397,42 @@ void lamp()
 void trophy()
 {
 	glPushMatrix();
-		glTranslatef(50, 0, 0);
-		lamp();
-		glRotatef(trophy_theta, 0, 1, 0);
+		glTranslatef(65, 0, 0);
+		//lamp();
+		
+		
 		glPushMatrix();
+			glRotatef(trophy_theta, 0, 1, 0);
 			glTranslatef(0, 5, 0);
 			glScalef(1.25, 1.25, 1.25);
 			glColor4f(0.7, 0.6, 0.1, 1.0); // golden trophy
 			actual_trophy();
 			glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 		glPopMatrix();
+		
+		// draw trophy shadow
+		float lx = -70; //30
+		float ly = 100; //40
+		float lz = -50; //-15
+		
+		glDisable(GL_LIGHTING);
+		
+		float shadowMat[16] = { ly,0.5,0,0,	-lx,0.5,-lz,-1,
+							0,0.5,ly,0,	0,0.5,0,ly };
+	
+		glPushMatrix();
+			glMultMatrixf(shadowMat);
+			glRotatef(trophy_theta, 0, 1, 0);
+			glTranslatef(0, 5, 0);
+			glScalef(1.25, 1.25, 1.25);
+			glColor4f(0.2, 0.2, 0.2, 0.3); // dark grey
+			actual_trophy();
+		glPopMatrix();
+		
+		glEnable(GL_LIGHTING);
+		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
+		
+		glRotatef(trophy_theta, 0, 1, 0);
 		turntable();
 		
 	glPopMatrix();
@@ -620,7 +678,7 @@ void initialize(void)
 
 void display(void)
 {
-	float lgt_pos[] = { -70.0f, 100.0f, -75.0f, 1.0f };  //light0 position
+	float lgt_pos[] = { -70.0f, 100.0f, -50.0f, 1.0f };  //light0 position
 	float spotlgt_pos[] = { 65.0f, 20.0f, -15.0f, 1.0f }; // light1 position
 	float spotdir[] = { -5.0, -3.0, 4.0 };
 
@@ -636,6 +694,8 @@ void display(void)
 	glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);   //light position
 	glLightfv(GL_LIGHT1, GL_POSITION, spotlgt_pos);
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotdir);
+	
+	glDisable(GL_LIGHT1);
 
 	floor();
 	skybox();

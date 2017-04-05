@@ -20,6 +20,7 @@ double los_x = 0;
 double los_z = -1;
 
 // rotation
+float blade_theta = 0;
 float trophy_theta = 0;
 float my_horse_theta = 0;
 float your_horse_theta = 0;
@@ -68,70 +69,6 @@ void loadTexture()
 	makeTexture("back.tga", true);
 	makeTexture("left.tga", true);
 	makeTexture("right.tga", true);
-	
-
-/*
-	glBindTexture(GL_TEXTURE_2D, txId[0]);
-	loadBMP("RaceFlag.bmp");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[1]);
-	loadBMP("1stPlace.bmp");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	* 
-
-	glBindTexture(GL_TEXTURE_2D, txId[2]);
-	loadBMP("2ndPlace.bmp");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[3]);
-	loadBMP("3rdPlace.bmp");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[4]);
-	loadTGA("up.tga");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[5]);
-	loadTGA("down.tga");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[6]);
-	loadTGA("front.tga");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[7]);
-	loadTGA("back.tga");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[8]);
-	loadTGA("left.tga");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-	glBindTexture(GL_TEXTURE_2D, txId[9]);
-	loadTGA("right.tga");
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	* */
 }
 
 				  //-- Ground Plane --------------------------------------------------------
@@ -571,6 +508,7 @@ void body()
 void your_horse()
 {
 	glPushMatrix();
+		glColor4f(0.7, 0, 0, 1.0); // red
 		glRotatef(your_horse_theta, 0, 1, 0);
 		glTranslatef(0, 0, 105);
 		front_left_leg();
@@ -578,12 +516,14 @@ void your_horse()
 		back_left_leg();
 		back_right_leg();
 		body();
+		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 	glPopMatrix();
 }
 
 void my_horse()
 {
 	glPushMatrix();
+		glColor4f(0.1, 0.7, 0.9, 1.0); // blue
 		glRotatef(my_horse_theta, 0, 1, 0);
 		glTranslatef(0, 0, 125);
 		front_left_leg();
@@ -591,12 +531,14 @@ void my_horse()
 		back_left_leg();
 		back_right_leg();
 		body();
+		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 	glPopMatrix();
 }
 
 void other_horse()
 {
 	glPushMatrix();
+		glColor4f(0, 1, 0.2, 1.0); // green
 		glRotatef(other_horse_theta, 0, 1, 0);
 		glTranslatef(0, 0, 145);
 		front_left_leg();
@@ -604,6 +546,60 @@ void other_horse()
 		back_left_leg();
 		back_right_leg();
 		body();
+		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
+	glPopMatrix();
+}
+
+void camera()
+{
+	glPushMatrix();
+		glRotatef(15, 1, 0, 0);
+		gluCylinder(q, 1, 3, 10, 20, 1);
+		glTranslatef(0, 0, 10);
+		glColor4f(1, 1, 0.6, 1.0); // yellow-white light
+		gluDisk(q, 0, 3, 20, 1);
+		glColor4f(0.1, 0.1, 0.1, 1.0); // dark brown post
+	glPopMatrix();
+}
+
+void blade()
+{
+	glBegin(GL_TRIANGLES);
+		glVertex3f(0, 7.5, 0);
+		glVertex3f(6, 7.5, 0);
+		glVertex3f(6, 7.5, 8);
+	glEnd();
+}
+
+void stick()
+{
+	glPushMatrix();
+		glTranslatef(0, 4, 1.5);
+		glScalef(1, 8, 1);
+		glutSolidCube(1);
+	glPopMatrix();
+}
+
+void drone()
+{
+	glPushMatrix();
+		glColor4f(0.1, 0.1, 0.1, 1.0); // black camera
+		glRotatef(my_horse_theta, 0, 1, 0); // follow horse
+		glTranslatef(0, 35, 125); // above my horse
+		glRotatef(90, 0, 1, 0); // face same direction as my horse
+		camera();
+		glTranslatef(0, 0, 4);
+		stick();
+		glRotatef(10, 1, 0, 0);
+		glRotatef(blade_theta, 0, 1, 0);
+		blade();
+		glRotatef(90, 0, 1, 0);
+		blade();
+		glRotatef(180, 0, 1, 0);
+		blade();
+		glRotatef(-90, 0, 1, 0);
+		blade();
+		glColor4f(0.3, 0.2, 0.2, 1.0); // black camera
 	glPopMatrix();
 }
 
@@ -697,6 +693,11 @@ void display(void)
 	
 	glDisable(GL_LIGHT1);
 
+	// inverse transform??
+	glRotatef(90, 0, 1, 0);
+	glTranslatef(-230, 15, -75);
+	glRotatef(-my_horse_theta, 0, 1, 0);
+
 	floor();
 	skybox();
 	tracks();
@@ -706,6 +707,7 @@ void display(void)
 	your_horse();
 	my_horse();
 	other_horse();
+	drone();
 
 	glutSwapBuffers();   //Useful for animation
 }
@@ -747,12 +749,15 @@ void calculateLegMovement() {
 
 void myTimer(int value)
 {
-	//my_horse_theta++;
-	//your_horse_theta += 1.02;
-	//other_horse_theta += 0.97;
-	//trophy_theta++;
+	my_horse_theta++;
+	your_horse_theta += 1.02;
+	other_horse_theta += 0.97;
+	trophy_theta++;
+	blade_theta -= 10;
+
+	// TODO moving spotlight & camera
 	
-	//calculateLegMovement();
+	calculateLegMovement();
 
 	glutPostRedisplay();
 	glutTimerFunc(20, myTimer, 0);
@@ -766,7 +771,7 @@ int main(int argc, char** argv)
 	glutInitWindowPosition(50, 50);
 	glutCreateWindow("Wild West Robot Race");
 	glutSpecialFunc(special);
-	glutTimerFunc(40, myTimer, 0);
+	glutTimerFunc(20, myTimer, 0);
 	initialize();
 
 	glutDisplayFunc(display);

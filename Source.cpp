@@ -40,6 +40,13 @@ float black[4] = { 0 };
 GLuint txId[10]; 
 int texCount = 0;
 
+// physics
+float accel = 9.8;
+float vel = 20;
+float air_time = 0;
+float height = 0;
+
+
 void makeTexture(char* name, bool isTGA)
 {
 	glBindTexture(GL_TEXTURE_2D, txId[texCount]);
@@ -55,7 +62,6 @@ void makeTexture(char* name, bool isTGA)
 	texCount += 1;
 }
 
-//------Function to load a texture in bmp format  ------------------------
 void loadTexture()
 {
 	glGenTextures(10, txId);
@@ -72,7 +78,6 @@ void loadTexture()
 	makeTexture("right.tga", true);
 }
 
-				  //-- Ground Plane --------------------------------------------------------
 void floor()
 {
 	glColor4f(0.8, 0.72, 0.6, 1.0);  //The floor is dusty brown
@@ -414,7 +419,6 @@ void trophy()
 		glTranslatef(65, 0, 0);
 		//lamp();
 		
-		
 		glPushMatrix();
 			glRotatef(trophy_theta, 0, 1, 0);
 			glTranslatef(0, 5, 0);
@@ -568,6 +572,8 @@ void your_horse()
 		glColor4f(0.7, 0, 0, 1.0); // red
 		glRotatef(your_horse_theta, 0, 1, 0);
 		glTranslatef(0, 0, 105);
+		glRotatef(-3, 1, 0, 0);
+		glRotatef(3, 0, 1, 0);
 		front_left_leg();
 		front_right_leg();
 		back_left_leg();
@@ -578,11 +584,14 @@ void your_horse()
 }
 
 void my_horse()
-{
+{	
 	glPushMatrix();
 		glColor4f(0.1, 0.7, 0.9, 1.0); // blue
 		glRotatef(my_horse_theta, 0, 1, 0);
+		glTranslatef(0, height, 0);
 		glTranslatef(0, 0, 125);
+		glRotatef(-3, 1, 0, 0);
+		glRotatef(3, 0, 1, 0);
 		front_left_leg();
 		front_right_leg();
 		back_left_leg();
@@ -598,6 +607,8 @@ void other_horse()
 		glColor4f(0, 1, 0.2, 1.0); // green
 		glRotatef(other_horse_theta, 0, 1, 0);
 		glTranslatef(0, 0, 145);
+		glRotatef(-3, 1, 0, 0);
+		glRotatef(3, 0, 1, 0);
 		front_left_leg();
 		front_right_leg();
 		back_left_leg();
@@ -745,7 +756,7 @@ void initialize(void)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60., 1.0, 1.0, 1000.0);   //Perspective projection
+	gluPerspective(60.0, 1.0, 1.0, 1000.0);   //Perspective projection
 }
 
 void display(void)
@@ -768,7 +779,7 @@ void display(void)
 		49.9, 48.5, 215,
 		0.0, 1.0, 0.0);
 		
-		// rough inverse transform
+		// inverse transform
 		glRotatef(90, 0, 1, 0);
 		glTranslatef(-189, 15, -75);
 		glRotatef(-my_horse_theta, 0, 1, 0);
@@ -844,15 +855,27 @@ void calculateLegMovement() {
 	}
 }
 
+void calculateHorseHeight()
+{
+	air_time += 0.1;
+	height = air_time * ((vel + (vel - (accel * air_time))) / 2);
+	
+	if (height < 0) {
+		air_time = 0;
+		height = 0;
+	}
+}
+
 void myTimer(int value)
 {
-	//my_horse_theta++;
-	//your_horse_theta += 1.02;
-	//other_horse_theta += 0.97;
+	my_horse_theta++;
+	your_horse_theta += 1.02;
+	other_horse_theta += 0.97;
 	trophy_theta++;
 	blade_theta -= 10;
 	
 	calculateLegMovement();
+	calculateHorseHeight();
 
 	glutPostRedisplay();
 	glutTimerFunc(20, myTimer, 0);

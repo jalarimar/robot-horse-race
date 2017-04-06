@@ -11,6 +11,13 @@ using namespace std;
 
 GLUquadric *q;    //Required for creating cylindrical objects
 
+const int N = 15;  // Total number of vertices on the base curve
+
+float vx[N] = { 4, 4.5, 5, 0.5, 2, 0.5, 1, 2.5, 4, 3, 2, 3, 5, 3, 0 };
+float vy[N] = { 0, 1, 2, 4, 5, 7, 10, 17, 19, 20, 22, 26, 27, 30, 32 };
+float vz[N] = { 0 };
+
+
 // camera movement
 double cam_height = 50;
 double cam_rotation = 0;
@@ -42,10 +49,22 @@ int texCount = 0;
 
 // physics
 float accel = 9.8;
-float vel = 6;
+float vel = 6.5;
 float air_time = 0;
 float height = 0;
 
+
+void normal(float x1, float y1, float z1,
+	float x2, float y2, float z2,
+	float x3, float y3, float z3)
+{
+	float nx, ny, nz;
+	nx = y1*(z2 - z3) + y2*(z3 - z1) + y3*(z1 - z2);
+	ny = z1*(x2 - x3) + z2*(x3 - x1) + z3*(x1 - x2);
+	nz = x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2);
+
+	glNormal3f(-nx, -ny, -nz);
+}
 
 void makeTexture(char* name, bool isTGA)
 {
@@ -538,9 +557,27 @@ void head()
 {
 	glPushMatrix();
 		glTranslatef(4, -2, 0);
-		glRotatef(20, 0, 0, 1);
-		glScalef(2, 5, 3);
-		glutSolidCube(1);
+
+		// ear
+		glPushMatrix();
+			glTranslatef(0, 2, 1.5);
+			glScalef(1, 4, 0.15);
+			glutSolidSphere(1, 5, 5);
+		glPopMatrix();
+
+		// ear
+		glPushMatrix();
+			glTranslatef(0, 2, -1.5);
+			glScalef(1, 4, 0.15);
+			glutSolidSphere(1, 5, 5);
+		glPopMatrix();
+
+		glPushMatrix();
+			// head
+			glRotatef(20, 0, 0, 1);
+			glScalef(2, 5, 3);
+			glutSolidCube(1);
+		glPopMatrix();
 	glPopMatrix();
 }
 
@@ -566,6 +603,40 @@ void body()
 	glPopMatrix();
 }
 
+void robot_things(float r, float g, float b)
+{
+	glPushMatrix();
+		glColor4f(r, g, b, 1.0);
+		glTranslatef(-4.5, 10, 3.1);
+		glScalef(1, 1, 0.7);
+		glutSolidTorus(0.3, 1.3, 10, 20);
+
+		glTranslatef(8, 0, 0);
+		glutSolidTorus(0.3, 2, 10, 20);
+
+		glTranslatef(0, 0, -8.9);
+		glutSolidTorus(0.3, 2, 10, 20);
+		
+		glTranslatef(-8, 0, 0);
+		glutSolidTorus(0.3, 1.3, 10, 20);
+
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(-7, 10, 0);
+		glRotatef(25, 0, 0, 1);
+		glTranslatef(-2, 0, 0);
+		glRotatef(90, 0, 1, 0);
+		glScalef(1, 1, 0.4);
+		glutSolidTorus(0.1, 0.5, 10, 30);
+		glTranslatef(0, 0, 2);
+		glutSolidTorus(0.1, 0.7, 10, 30);
+		glTranslatef(0, 0, 2);
+		glutSolidTorus(0.1, 0.6, 10, 30);
+	glPopMatrix();
+	
+}
+
 void your_horse()
 {
 	glPushMatrix();
@@ -580,6 +651,7 @@ void your_horse()
 		back_left_leg();
 		back_right_leg();
 		body();
+		robot_things(0.4, 0, 0);
 		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 	glPopMatrix();
 }
@@ -598,6 +670,7 @@ void my_horse()
 		back_left_leg();
 		back_right_leg();
 		body();
+		robot_things(0.1, 0.4, 0.8);
 		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 	glPopMatrix();
 }
@@ -616,6 +689,7 @@ void other_horse()
 		back_left_leg();
 		back_right_leg();
 		body();
+		robot_things(0, 0.5, 0.1);
 		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 	glPopMatrix();
 }
@@ -670,6 +744,97 @@ void drone()
 		glRotatef(-90, 0, 1, 0);
 		blade();
 		glColor4f(0.3, 0.2, 0.2, 1.0); // black camera
+	glPopMatrix();
+}
+
+void post() 
+{
+	glPushMatrix();
+	
+	float wx[N], wy[N], wz[N];
+	float angStep = 10.0*3.1415926 / 180.0;  //Rotate in 10 deg steps (converted to radians)
+	glColor4f(1, 1, 1, 1.0);
+
+	glTranslatef(0, 0, 200);
+	glScalef(0.75, 0.75, 0.6);
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int j = 0; j < 36; j++)
+	{
+		for (int i = 0; i < N; i++)
+		{
+			wx[i] = vx[i] * cos(angStep) + vz[i] * sin(angStep);
+			wy[i] = vy[i];
+			wz[i] = -vx[i] * sin(angStep) + vz[i] * cos(angStep);
+
+			if (i > 0) normal(wx[i - 1], wy[i - 1], wz[i - 1],
+				vx[i - 1], vy[i - 1], vz[i - 1],
+				vx[i], vy[i], vz[i]);
+			glVertex3f(vx[i], vy[i], vz[i]);
+			if (i > 0) normal(wx[i - 1], wy[i - 1], wz[i - 1],
+				vx[i], vy[i], vz[i],
+				wx[i], wy[i], wz[i]);
+			glVertex3f(wx[i], wy[i], wz[i]);
+
+			vx[i] = wx[i];
+			vy[i] = wy[i];
+			vz[i] = wz[i];
+		}
+
+	}
+	glEnd();
+	glPopMatrix();
+}
+
+void board()
+{
+	glPushMatrix();
+		glTranslatef(-25, 14, 200);
+		glScalef(50, 1.5, 0.5);
+		glutSolidCube(1);
+		glTranslatef(0, -3, 0);
+		glScalef(1, 0.5, 1);
+		glutSolidCube(1);
+	glPopMatrix();
+}
+
+void wall()
+{
+	post();
+	board();
+	glPushMatrix();
+		glTranslatef(-50, 0, 0);
+		post();
+		board();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-100, 0, 0);
+		post();
+		board();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-150, 0, 0);
+		post();
+		board();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(50, 0, 0);
+		post();
+		board();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(100, 0, 0);
+		post();
+		board();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(150, 0, 0);
+		post();
+		board();
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(200, 0, 0);
+		post();
+		board();
 	glPopMatrix();
 }
 
@@ -754,6 +919,7 @@ void initialize(void)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
 	gluQuadricDrawStyle(q, GLU_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glClearColor(0.0, 0.0, 0.0, 0.0);  //Background colour
 
 	glMatrixMode(GL_PROJECTION);
@@ -819,6 +985,16 @@ void display(void)
 	other_horse();
 	drone();
 
+	glPushMatrix();
+		wall();
+		glRotatef(90, 0, 1, 0);
+		wall();
+		glRotatef(90, 0, 1, 0);
+		wall();
+		glRotatef(90, 0, 1, 0);
+		wall();
+	glPopMatrix();
+	
 	glutSwapBuffers();   //Useful for animation
 }
 

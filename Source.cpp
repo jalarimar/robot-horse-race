@@ -42,7 +42,7 @@ int texCount = 0;
 
 // physics
 float accel = 9.8;
-float vel = 20;
+float vel = 6;
 float air_time = 0;
 float height = 0;
 
@@ -495,7 +495,7 @@ void front_right_leg()
 {
 	glPushMatrix();
 		glTranslatef(5, 10, 2);
-		glRotatef(front_leg_theta, 0, 0, 1);
+		glRotatef(back_leg_theta, 0, 0, 1);
 		glTranslatef(0, -5, 0);
 		glScalef(1, 10, 1);
 		glutSolidCube(1);
@@ -517,7 +517,7 @@ void back_right_leg()
 {
 	glPushMatrix();
 		glTranslatef(-5, 10, 2);
-		glRotatef(back_leg_theta, 0, 0, 1);
+		glRotatef(front_leg_theta, 0, 0, 1);
 		glTranslatef(0, -5, 0);
 		glScalef(1, 10, 1);
 		glutSolidCube(1);
@@ -571,6 +571,7 @@ void your_horse()
 	glPushMatrix();
 		glColor4f(0.7, 0, 0, 1.0); // red
 		glRotatef(your_horse_theta, 0, 1, 0);
+		glTranslatef(0, height, 0);
 		glTranslatef(0, 0, 105);
 		glRotatef(-3, 1, 0, 0);
 		glRotatef(3, 0, 1, 0);
@@ -606,6 +607,7 @@ void other_horse()
 	glPushMatrix();
 		glColor4f(0, 1, 0.2, 1.0); // green
 		glRotatef(other_horse_theta, 0, 1, 0);
+		glTranslatef(0, height, 0);
 		glTranslatef(0, 0, 145);
 		glRotatef(-3, 1, 0, 0);
 		glRotatef(3, 0, 1, 0);

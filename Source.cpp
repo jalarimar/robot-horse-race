@@ -766,9 +766,10 @@ void post()
 			wy[i] = vy[i];
 			wz[i] = -vx[i] * sin(angStep) + vz[i] * cos(angStep);
 
-			if (i > 0) normal(wx[i - 1], wy[i - 1], wz[i - 1],
+			/*if (i > 0) normal(wx[i - 1], wy[i - 1], wz[i - 1],
 				vx[i - 1], vy[i - 1], vz[i - 1],
-				vx[i], vy[i], vz[i]);
+				vx[i], vy[i], vz[i]);*/
+			//glNormal3f(-sin(j / 36.0 * 3.1415 * 180), 0, -sin(j / 36.0 * 3.1415 * 180));
 			glVertex3f(vx[i], vy[i], vz[i]);
 			if (i > 0) normal(wx[i - 1], wy[i - 1], wz[i - 1],
 				vx[i], vy[i], vz[i],

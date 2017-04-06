@@ -18,13 +18,14 @@ double cam_position_x = 50;
 double cam_position_z = 220;
 double los_x = 0;
 double los_z = -1;
+bool is_first_person = false; // TODO should start false
 
 // rotation
 float blade_theta = 0;
 float trophy_theta = 0;
+float your_horse_theta = -30;
 float my_horse_theta = 0;
-float your_horse_theta = 0;
-float other_horse_theta = 0;
+float other_horse_theta = 20; // give the slow one a head start
 float front_leg_theta = 0;
 float back_leg_theta = 0;
 bool front_leg_fowards = false;
@@ -78,20 +79,69 @@ void floor()
 	glNormal3f(0.0, 1.0, 0.0);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, black);
 
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, txId[5]);
+
 	//The floor is made up of several tiny squares on a 200x200 grid. Each square has a unit size.
 	glBegin(GL_QUADS);
-	for (int i = -200; i < 200; i++)
-	{
-		for (int j = -200; j < 200; j++)
+	
+		for (int i = -200; i < 200; i++)
 		{
-			glVertex3f(i, 0.0, j);
-			glVertex3f(i, 0.0, j + 1);
-			glVertex3f(i + 1, 0.0, j + 1);
-			glVertex3f(i + 1, 0.0, j);
+			for (int j = -200; j < 200; j++)
+			{
+				glTexCoord2f(0, 0); glVertex3f(i, 0.0, j);
+				glTexCoord2f(0, 1); glVertex3f(i, 0.0, j + 1);
+				glTexCoord2f(1, 1); glVertex3f(i + 1, 0.0, j + 1);
+				glTexCoord2f(1, 0); glVertex3f(i + 1, 0.0, j);
+			}
 		}
-	}
+	
+	
+		/*
+		int factor = 400;
+		
+		glTexCoord2f(0, 0); glVertex3f(-200, 0.0, -200);
+		glTexCoord2f(0, 1/factor); glVertex3f(-200, 0.0, -199);
+		glTexCoord2f(1/factor, 1/factor); glVertex3f(-199, 0.0, -199);
+		glTexCoord2f(1/factor, 0); glVertex3f(-199, 0.0, -200);
+		
+		int h = 1;
+		for (int j = -199; j < 200; j++)
+		{
+			glTexCoord2f(0, h/factor); glVertex3f(-200, 0.0, j);
+			glTexCoord2f(0, h/factor + 1/factor); glVertex3f(-200, 0.0, j + 1);
+			glTexCoord2f(1/factor, h/factor + 1/factor); glVertex3f(-199, 0.0, j + 1);
+			glTexCoord2f(1/factor, h/factor); glVertex3f(-199, 0.0, j);
+			h++;
+		}
+		
+		
+		int k = 1;
+		for (int i = -199; i < 200; i++)
+		{
+			int h = 1;
+			for (int j = -199; j < 200; j++)
+			{
+				glTexCoord2f(k/factor, h/factor); glVertex3f(i, 0.0, j);
+				glTexCoord2f(k/factor, h/factor + 1/factor); glVertex3f(i, 0.0, j + 1);
+				glTexCoord2f(k/factor + 1/factor, h/factor + 1/factor); glVertex3f(i + 1, 0.0, j + 1);
+				glTexCoord2f(k/factor + 1/factor, h/factor); glVertex3f(i + 1, 0.0, j);
+				h++;
+			}
+			k++;
+		}
+		
+		/*
+		glTexCoord2f(399/factor, 399/factor); glVertex3f(199, 0.0, 199);
+		glTexCoord2f(399/factor, 400/factor); glVertex3f(199, 0.0, 200);
+		glTexCoord2f(400/factor, 400/factor); glVertex3f(200, 0.0, 200);
+		glTexCoord2f(400/factor, 399/factor); glVertex3f(200, 0.0, 199);
+		* */
+		
+	
 	glEnd();
 
+	//glDisable(GL_TEXTURE_2D);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 }
 
@@ -215,9 +265,11 @@ void track(float radius)
 
 void tracks()
 {
+	glMaterialfv(GL_FRONT, GL_SPECULAR, black);
 	glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown track boundaries
 	track(95.0);   // Inner track boundary has radius 95 units
 	track(155.0);   //Outer track boundary has radius 155 units
+	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
 }
 
 void block(float x_min, float x_max, float y_min, float y_max, float z_min, float z_max, GLuint texture)
@@ -331,6 +383,31 @@ void lamp()
 
 }
 
+void shadow_trophy()
+{
+	// light source
+	float lx = -70; //30
+	float ly = 100; //40
+	float lz = -50; //-15
+	
+	glDisable(GL_LIGHTING);
+	
+	float shadowMat[16] = { ly,0.5,0,0,	-lx,0.5,-lz,-1,
+						0,0.5,ly,0,	0,0.5,0,ly };
+
+	glPushMatrix();
+		glMultMatrixf(shadowMat);
+		glRotatef(trophy_theta, 0, 1, 0);
+		glTranslatef(0, 5, 0);
+		glScalef(1.25, 1.25, 1.25);
+		glColor4f(0.2, 0.2, 0.2, 0.3); // dark grey
+		actual_trophy();
+	glPopMatrix();
+	
+	glEnable(GL_LIGHTING);
+	glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
+}
+
 void trophy()
 {
 	glPushMatrix();
@@ -342,32 +419,12 @@ void trophy()
 			glRotatef(trophy_theta, 0, 1, 0);
 			glTranslatef(0, 5, 0);
 			glScalef(1.25, 1.25, 1.25);
-			glColor4f(0.7, 0.6, 0.1, 1.0); // golden trophy
+			glColor4f(1, 0.8, 0.2, 1.0); // golden trophy
 			actual_trophy();
 			glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
 		glPopMatrix();
 		
-		// draw trophy shadow
-		float lx = -70; //30
-		float ly = 100; //40
-		float lz = -50; //-15
-		
-		glDisable(GL_LIGHTING);
-		
-		float shadowMat[16] = { ly,0.5,0,0,	-lx,0.5,-lz,-1,
-							0,0.5,ly,0,	0,0.5,0,ly };
-	
-		glPushMatrix();
-			glMultMatrixf(shadowMat);
-			glRotatef(trophy_theta, 0, 1, 0);
-			glTranslatef(0, 5, 0);
-			glScalef(1.25, 1.25, 1.25);
-			glColor4f(0.2, 0.2, 0.2, 0.3); // dark grey
-			actual_trophy();
-		glPopMatrix();
-		
-		glEnable(GL_LIGHTING);
-		glColor4f(0.3, 0.2, 0.2, 1.0); // dark brown
+		shadow_trophy();
 		
 		glRotatef(trophy_theta, 0, 1, 0);
 		turntable();
@@ -585,7 +642,7 @@ void drone()
 	glPushMatrix();
 		glColor4f(0.1, 0.1, 0.1, 1.0); // black camera
 		glRotatef(my_horse_theta, 0, 1, 0); // follow horse
-		glTranslatef(0, 35, 125); // above my horse
+		glTranslatef(-45, 35, 125); // above my horse
 		glRotatef(90, 0, 1, 0); // face same direction as my horse
 		camera();
 		glTranslatef(0, 0, 4);
@@ -606,33 +663,45 @@ void drone()
 //--Special keyboard event callback function ---------
 void special(int key, int x, int y)
 {
-	float speed = 8.0f;
-	if (key == GLUT_KEY_UP) {
-		cam_position_x += los_x * speed; // move camera forward in the current direction
-		cam_position_z += los_z * speed;
-	}
-	else if (key == GLUT_KEY_DOWN) {
-		cam_position_x -= los_x * speed; // move camera backward in the current direction, keeping the look direction same
-		cam_position_z -= los_z * speed;
-	}
-	else if (key == GLUT_KEY_LEFT) cam_rotation -= 5; // turn left by 5 degs
-	else if (key == GLUT_KEY_RIGHT) cam_rotation += 5; // turn right by 5 degs
-	los_x = sin(cam_rotation * PI / 180.0);
-	los_z = -cos(cam_rotation * PI / 180.0);
-	// cout << "pos: " << cam_position_x << " " << cam_position_z << " dir: " << los_x << " " << los_z << endl;
+	if (!is_first_person) {
+		// move camera
+		float speed = 8.0f;
+		if (key == GLUT_KEY_UP) {
+			cam_position_x += los_x * speed; // move camera forward in the current direction
+			cam_position_z += los_z * speed;
+		}
+		else if (key == GLUT_KEY_DOWN) {
+			cam_position_x -= los_x * speed; // move camera backward in the current direction, keeping the look direction same
+			cam_position_z -= los_z * speed;
+		}
+		else if (key == GLUT_KEY_LEFT) cam_rotation -= 5; // turn left by 5 degs
+		else if (key == GLUT_KEY_RIGHT) cam_rotation += 5; // turn right by 5 degs
+		los_x = sin(cam_rotation * PI / 180.0);
+		los_z = -cos(cam_rotation * PI / 180.0);
+		// cout << "pos: " << cam_position_x << " " << cam_position_z << " dir: " << los_x << " " << los_z << endl;
 
-	float max_pos = 200;
-	float min_pos = -200;
-	if (cam_position_x > max_pos) {
-		cam_position_x = max_pos;
-	} else if (cam_position_x < min_pos) {
-		cam_position_x = min_pos;
-	}
-	if (cam_position_z > max_pos) {
-		cam_position_z = max_pos;
-	}
-	else if (cam_position_z < min_pos) {
-		cam_position_z = min_pos;
+		float max_pos = 200;
+		float min_pos = -200;
+		if (cam_position_x > max_pos) {
+			cam_position_x = max_pos;
+		} else if (cam_position_x < min_pos) {
+			cam_position_x = min_pos;
+		}
+		if (cam_position_z > max_pos) {
+			cam_position_z = max_pos;
+		}
+		else if (cam_position_z < min_pos) {
+			cam_position_z = min_pos;
+		}
+		
+		// change view
+		if (key == GLUT_KEY_F1) {
+			is_first_person = true;
+		}
+	} else {
+		if (key == GLUT_KEY_F1) {
+			is_first_person = false;
+		}
 	}
 
 	glutPostRedisplay();
@@ -656,6 +725,13 @@ void initialize(void)
 	glLightfv(GL_LIGHT1, GL_SPECULAR, white);
 	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30);
 	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 15);
+	
+	glEnable(GL_LIGHT2);
+	glLightfv(GL_LIGHT2, GL_AMBIENT, grey);
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, white);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, white);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 35);
+	glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 15);
 
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
@@ -677,26 +753,47 @@ void display(void)
 	float lgt_pos[] = { -70.0f, 100.0f, -50.0f, 1.0f };  //light0 position
 	float spotlgt_pos[] = { 65.0f, 20.0f, -15.0f, 1.0f }; // light1 position
 	float spotdir[] = { -5.0, -3.0, 4.0 };
+	
+	float camlight_pos[] = {0.0, 0.0, 0.0, 1.0f}; //light2 position
+	float camlight_dir[] = {5.0, -1.5, 0 };
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	gluLookAt(
+		
+	if (is_first_person) {
+		
+		gluLookAt( // fixed values so not affected by camera position changes from other view
+		50, 50.2, 220, 
+		49.9, 48.5, 215,
+		0.0, 1.0, 0.0);
+		
+		// rough inverse transform
+		glRotatef(90, 0, 1, 0);
+		glTranslatef(-189, 15, -75);
+		glRotatef(-my_horse_theta, 0, 1, 0);
+		
+		
+	} else {
+		gluLookAt(
 		cam_position_x, cam_height, cam_position_z,
 		cam_position_x + los_x, cam_height - 0.25, cam_position_z + los_z,
 		0.0, 1.0, 0.0);
+	}
 
 	glLightfv(GL_LIGHT0, GL_POSITION, lgt_pos);   //light position
+
 	glLightfv(GL_LIGHT1, GL_POSITION, spotlgt_pos);
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotdir);
-	
 	glDisable(GL_LIGHT1);
+	
+	glPushMatrix();
+		glRotatef(my_horse_theta, 0, 1, 0); // follow horse
+		glTranslatef(-25, 35, 125); // above my horse
+		glLightfv(GL_LIGHT2, GL_POSITION, camlight_pos);
+		glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, camlight_dir);
+	glPopMatrix();
 
-	// inverse transform??
-	glRotatef(90, 0, 1, 0);
-	glTranslatef(-230, 15, -75);
-	glRotatef(-my_horse_theta, 0, 1, 0);
 
 	floor();
 	skybox();
@@ -749,13 +846,11 @@ void calculateLegMovement() {
 
 void myTimer(int value)
 {
-	my_horse_theta++;
-	your_horse_theta += 1.02;
-	other_horse_theta += 0.97;
+	//my_horse_theta++;
+	//your_horse_theta += 1.02;
+	//other_horse_theta += 0.97;
 	trophy_theta++;
 	blade_theta -= 10;
-
-	// TODO moving spotlight & camera
 	
 	calculateLegMovement();
 

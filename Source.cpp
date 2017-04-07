@@ -50,8 +50,12 @@ int texCount = 0;
 // physics
 float accel = 9.8;
 float vel = 6.5;
+float my_vel = 6.5;
 float air_time = 0;
+float my_air_time = 0;
 float height = 0;
+float my_height = 0;
+bool jumping = false;
 
 
 void normal(float x1, float y1, float z1,
@@ -661,7 +665,7 @@ void my_horse()
 	glPushMatrix();
 		glColor4f(0.1, 0.7, 0.9, 1.0); // blue
 		glRotatef(my_horse_theta, 0, 1, 0);
-		glTranslatef(0, height, 0);
+		glTranslatef(0, my_height, 0);
 		glTranslatef(0, 0, 125);
 		glRotatef(-3, 1, 0, 0);
 		glRotatef(3, 0, 1, 0);
@@ -882,6 +886,11 @@ void special(int key, int x, int y)
 			is_first_person = false;
 		}
 	}
+	
+	if (key == GLUT_KEY_F2) {
+		my_vel = 20;
+		jumping = true;
+	}
 
 	glutPostRedisplay();
 }
@@ -1042,6 +1051,22 @@ void calculateHorseHeight()
 	if (height < 0) {
 		air_time = 0;
 		height = 0;
+	}
+	
+	if (jumping) {
+		my_horse_theta += 0.05; // can make horse go faster by jumping
+		
+		my_air_time += 0.1;
+		my_height = my_air_time * ((my_vel + (my_vel - (accel * my_air_time))) / 2);
+		
+		if (my_height < 0) {
+			my_air_time = 0;
+			my_height = 0;
+			my_vel = 6.5;
+			jumping = false;
+		}
+	} else {
+		my_height = air_time * ((vel + (vel - (accel * air_time))) / 2);
 	}
 }
 
